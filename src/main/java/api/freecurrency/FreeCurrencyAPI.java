@@ -37,8 +37,7 @@ public class FreeCurrencyAPI implements CurrencyAPI {
     @Override
     public Currency getCurrencyFor(String code) {
         try {
-            return formatCurrencyListFor(fetchContentsOf(getCurrencyEndpointFor(List.of(code))))
-                    .stream().findFirst().orElseThrow();
+            return getCurrenciesFor(List.of(code)).stream().findFirst().orElse(Currency.NULL);
         } catch (NoSuchElementException e) {
             throw new RuntimeException(e);
         }
