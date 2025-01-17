@@ -73,6 +73,12 @@ public class FreeCurrencyAPI implements CurrencyAPI {
     }
 
     @Override
+    public ExchangeRate getExchangeRateFor(String baseCode, String code) {
+        return getExchangeRatesFor(baseCode, List.of(code)).stream()
+                .filter(er -> er.to().code().equals(code)).findFirst().orElse(ExchangeRate.NULL);
+    }
+
+    @Override
     public List<ExchangeRate> getExchangeRatesFor(String baseCode, List<String> codes) {
         Currency base = getCurrencyFor(baseCode);
         return formatExchangeRatesFor(fetchContentsOf(getExchangeRatesEndpointWithBaseFor(codes, baseCode)), base);

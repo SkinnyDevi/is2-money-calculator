@@ -39,7 +39,7 @@ public class MockAPI implements CurrencyAPI {
     @Override
     public List<ExchangeRate> getExchangeRatesFor(String baseCode) {
         Currency base = getCurrencyFor(baseCode);
-        List<Currency> currencies = getCurrencies().stream().filter(c -> c != base).toList();
+        List<Currency> currencies = getCurrencies().stream().filter(c -> !c.equals(base)).toList();
         return List.of(
                 new ExchangeRate(base, currencies.get(0), LocalDate.now(), 1.123541),
                 new ExchangeRate(base, currencies.get(1), LocalDate.now(), 0.231412)
@@ -47,9 +47,15 @@ public class MockAPI implements CurrencyAPI {
     }
 
     @Override
+    public ExchangeRate getExchangeRateFor(String baseCode, String code) {
+        return getExchangeRatesFor(baseCode, List.of(code)).stream()
+                .filter(er -> er.to().code().equals(code)).findFirst().orElse(ExchangeRate.NULL);
+    }
+
+    @Override
     public List<ExchangeRate> getExchangeRatesFor(String baseCode, List<String> codes) {
         Currency base = getCurrencyFor(baseCode);
-        List<Currency> currencies = getCurrenciesFor(codes).stream().filter(c -> c != base).toList();
+        List<Currency> currencies = getCurrenciesFor(codes).stream().filter(c -> !c.equals(base)).toList();
         return List.of(
                 new ExchangeRate(base, currencies.get(0), LocalDate.now(), 1.41251),
                 new ExchangeRate(base, currencies.get(1), LocalDate.now(), 0.124412)
