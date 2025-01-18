@@ -52,7 +52,6 @@ public class MoneyControl {
         }
 
         ExchangeRate exchangeRate = getExchangeRateFromCacheFor(money.currency(), exchangeCurrency);
-        System.out.println(exchangeRate);
         if (exchangeRate.equals(ExchangeRate.NULL))
             throwNoExchangeRateFoundException(money, exchangeCurrency);
 

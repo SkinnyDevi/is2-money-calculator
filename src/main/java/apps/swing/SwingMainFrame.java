@@ -8,12 +8,14 @@ import view.MoneyDialog;
 import view.MoneyDisplay;
 
 import javax.swing.*;
+import javax.swing.border.Border;
 import java.awt.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class SwingMainFrame extends JFrame {
+    public static final int HORIZONTAL_MARGIN = 10;
     private final Map<String, Command> commands = new HashMap<>();
     private MoneyDialog moneyDialog;
     private MoneyDisplay moneyDisplay;
@@ -21,20 +23,36 @@ public class SwingMainFrame extends JFrame {
 
     public SwingMainFrame(List<Currency> currencies) throws HeadlessException {
         this.setTitle("Money Calculator");
-        this.setSize(800, 600);
+        this.setSize(600, 300);
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
         this.setLocationRelativeTo(null);
-        this.setLayout(new BorderLayout());
-        add(BorderLayout.WEST, createMoneyDialog(currencies));
-        add(BorderLayout.EAST, createMoneyDisplayContainer(currencies));
-        add(BorderLayout.CENTER, createHelperButtons());
+        this.setMinimumSize(new Dimension(600, 300));
+        add(createMainContainer(currencies));
+    }
+
+    private Component createMainContainer(List<Currency> currencies) {
+        JPanel mainContainer = new JPanel(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(10, 10, 10, 10);
+
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        mainContainer.add(createMoneyDialog(currencies));
+
+        gbc.gridx = 1;
+        mainContainer.add(createHelperButtons());
+
+        gbc.gridx = 2;
+        mainContainer.add(createMoneyDisplayContainer(currencies));
+
+        return mainContainer;
     }
 
     private Component createMoneyDisplayContainer(List<Currency> currencies) {
-        JPanel jPanel = new JPanel();
-        jPanel.setLayout(new BorderLayout());
-        jPanel.add(BorderLayout.NORTH, createMoneyDisplay());
-        jPanel.add(BorderLayout.SOUTH, createCurrencyDialog(currencies));
+        JPanel jPanel = new JPanel(createGridLayout());
+        jPanel.setBorder(createMarginSpacingBorder());
+        jPanel.add(createMoneyDisplay());
+        jPanel.add(BorderLayout.CENTER, createCurrencyDialog(currencies));
         return jPanel;
     }
 
@@ -51,28 +69,11 @@ public class SwingMainFrame extends JFrame {
         return display;
     }
 
-    private Component createMoneyDialog(List<Currency> currencies) {
-        SwingMoneyDialog swingMoneyDialog = new SwingMoneyDialog();
-        swingMoneyDialog.setup(currencies);
-        this.moneyDialog = swingMoneyDialog;
-        return swingMoneyDialog;
-    }
-
-    public SwingMainFrame put(CommandIdentifiers identifier, Command command) {
-        this.commands.put(identifier.get(), command);
-        return this;
-    }
-
     private Component createHelperButtons() {
         JPanel jPanel = new JPanel();
+        jPanel.setBorder(createMarginSpacingBorder());
         jPanel.add(createSwapButton());
         return jPanel;
-    }
-
-    private Component createSwapButton() {
-        JButton jButton = new JButton("Swap");
-        configureButton(jButton, CommandIdentifiers.SWAP_DIALOG_CONTENTS);
-        return jButton;
     }
 
     private void configureButton(JButton jButton, CommandIdentifiers identifier) {
@@ -84,12 +85,40 @@ public class SwingMainFrame extends JFrame {
         jButton.addActionListener(__ -> executeCommandFor(identifier));
     }
 
-    private void executeCommandFor(CommandIdentifiers identifier) {
-        commands.get(identifier.get()).execute();
-    }
-
     private void styleButton(JButton jButton) {
 
+    }
+
+    private Component createSwapButton() {
+        JButton jButton = new JButton("Swap");
+        configureButton(jButton, CommandIdentifiers.SWAP_DIALOG_CONTENTS);
+        return jButton;
+    }
+
+    private Component createMoneyDialog(List<Currency> currencies) {
+        SwingMoneyDialog swingMoneyDialog = new SwingMoneyDialog();
+        swingMoneyDialog.setup(currencies);
+        swingMoneyDialog.setBorder(createMarginSpacingBorder());
+        swingMoneyDialog.setLayout(createGridLayout());
+        this.moneyDialog = swingMoneyDialog;
+        return swingMoneyDialog;
+    }
+
+    private LayoutManager createGridLayout() {
+        return new GridLayout(2, 1, 0, 10);
+    }
+
+    private static Border createMarginSpacingBorder() {
+        return BorderFactory.createEmptyBorder(0, HORIZONTAL_MARGIN, 0, HORIZONTAL_MARGIN);
+    }
+
+    public SwingMainFrame put(CommandIdentifiers identifier, Command command) {
+        this.commands.put(identifier.get(), command);
+        return this;
+    }
+
+    private void executeCommandFor(CommandIdentifiers identifier) {
+        commands.get(identifier.get()).execute();
     }
 
     public MoneyDialog getMoneyDialog() {

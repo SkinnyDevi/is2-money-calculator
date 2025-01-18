@@ -20,6 +20,7 @@ public class SwingCurrencyDialog extends JPanel implements CurrencyDialog {
 
     @Override
     public CurrencyDialog setup(List<Currency> currencies) {
+        setLayout(new BorderLayout());
         add(createDropdownComponent(currencies));
         return this;
     }
@@ -45,9 +46,7 @@ public class SwingCurrencyDialog extends JPanel implements CurrencyDialog {
     private ActionListener createActionListener(JComboBox<Currency> dropdown) {
         return e -> {
             Currency selected = (Currency) dropdown.getSelectedItem();
-            if (selected != null && selected.equals(previousSelection))
-                return;
-            else {
+            if (selected.equals(Currency.NULL) || !selected.equals(previousSelection)) {
                 previousSelection = selected;
                 updateEvent.notifyUpdate();
             }

@@ -34,9 +34,8 @@ public class SwingMoneyDialog extends JPanel implements MoneyDialog {
 
     @Override
     public MoneyDialog setup(List<Currency> currencies) {
-        this.setLayout(new BorderLayout());
-        add(BorderLayout.NORTH, createAmountTextField());
-        add(BorderLayout.SOUTH, createCurrencyDialog(currencies));
+        add(createAmountTextField());
+        add(BorderLayout.CENTER, createCurrencyDialog(currencies));
         return this;
     }
 
@@ -60,7 +59,7 @@ public class SwingMoneyDialog extends JPanel implements MoneyDialog {
 
     private Component createAmountTextField() {
         JTextField textField = new JTextField("00.00");
-        textField.setColumns(5);
+        textField.setColumns(15);
         createDocumentListener(textField);
         this.amountTextField = textField;
         return textField;

@@ -16,4 +16,9 @@ public record Currency(String symbol, String name, String code) {
     public int hashCode() {
         return code().hashCode() * 24 + name().hashCode();
     }
+
+    @Override
+    public String toString() {
+        return "(" + symbol() + ") " + "[" + code() + "] - " + name();
+    }
 }
