@@ -32,7 +32,8 @@ public class Main {
                 mainFrame.getMoneyDisplay(),
                 mainFrame.getMoneyDialog(),
                 mainFrame.getCurrencyDialog(),
-                api
+                api,
+                mainFrame.getExchangeRateDisplay()
         );
     }
 

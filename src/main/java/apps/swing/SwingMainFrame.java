@@ -3,10 +3,7 @@ package apps.swing;
 import control.Command;
 import control.CommandIdentifiers;
 import model.Currency;
-import view.AppColors;
-import view.CurrencyDialog;
-import view.MoneyDialog;
-import view.MoneyDisplay;
+import view.*;
 
 import javax.swing.*;
 import javax.swing.border.Border;
@@ -24,6 +21,7 @@ public class SwingMainFrame extends JFrame {
     private MoneyDialog moneyDialog;
     private MoneyDisplay moneyDisplay;
     private CurrencyDialog currencyDialog;
+    private ExchangeRateDisplay exchangeRateDisplay;
 
     public SwingMainFrame(List<Currency> currencies) throws HeadlessException {
         this.setTitle("Currency Converter");
@@ -52,7 +50,7 @@ public class SwingMainFrame extends JFrame {
         JPanel mainContainer = createPanelWithBackgroundAppColor();
         mainContainer.setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(10, 10, 10, 10);
+        gbc.insets = new Insets(15, 15, 15, 15);
 
         gbc.gridx = 0;
         gbc.gridy = 0;
@@ -106,9 +104,23 @@ public class SwingMainFrame extends JFrame {
 
     private Component createHelperButtons() {
         JPanel jPanel = createPanelWithBackgroundAppColor();
+        jPanel.setLayout(new BorderLayout());
         jPanel.setBorder(createMarginSpacingBorder());
-        jPanel.add(createSwapButton());
+        jPanel.add(createSwapButton(), BorderLayout.NORTH);
+        jPanel.add(createVerticalSeparatorWith(20));
+        jPanel.add(createExchangeRateDisplay(), BorderLayout.SOUTH);
         return jPanel;
+    }
+
+    private static Component createVerticalSeparatorWith(int height) {
+        return Box.createRigidArea(new Dimension(0, height));
+    }
+
+    private Component createExchangeRateDisplay() {
+        SwingExchangeRateDisplay swingExchangeRateDisplay = new SwingExchangeRateDisplay();
+        swingExchangeRateDisplay.setFont(TEXT_FONT);
+        this.exchangeRateDisplay = swingExchangeRateDisplay;
+        return swingExchangeRateDisplay;
     }
 
     private JPanel createPanelWithBackgroundAppColor() {
@@ -186,5 +198,9 @@ public class SwingMainFrame extends JFrame {
 
     public CurrencyDialog getCurrencyDialog() {
         return currencyDialog;
+    }
+
+    public ExchangeRateDisplay getExchangeRateDisplay() {
+        return exchangeRateDisplay;
     }
 }

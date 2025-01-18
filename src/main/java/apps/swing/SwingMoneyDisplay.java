@@ -14,11 +14,11 @@ public class SwingMoneyDisplay extends JLabel implements MoneyDisplay {
         this.setText("00.00");
         this.setHorizontalAlignment(JLabel.CENTER);
         this.setForeground(getColor(AppColors.LABEL_TEXT_COLOR));
-        setBorder(createLineBorder());
+        setBorder(createDashedBorder());
     }
 
-    private Border createLineBorder() {
-        return BorderFactory.createLineBorder(getColor(AppColors.LABEL_TEXT_COLOR));
+    private Border createDashedBorder() {
+        return BorderFactory.createDashedBorder(getColor(AppColors.LABEL_TEXT_COLOR));
     }
 
     private Color getColor(AppColors color) {
@@ -35,7 +35,7 @@ public class SwingMoneyDisplay extends JLabel implements MoneyDisplay {
     }
 
     private static String toString(Money money) {
-        DecimalFormat formatter = new DecimalFormat("00.00");
+        DecimalFormat formatter = new DecimalFormat("00.000");
         return formatter.format(money.amount());
     }
 }

@@ -5,9 +5,11 @@ import model.Currency;
 import model.ExchangeRate;
 import model.Money;
 import view.CurrencyDialog;
+import view.ExchangeRateDisplay;
 import view.MoneyDialog;
 import view.MoneyDisplay;
 
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -17,18 +19,21 @@ public class MoneyControl {
     private final MoneyDialog moneyDialog;
     private final CurrencyDialog currencyDialog;
     private final CurrencyAPI api;
+    private final ExchangeRateDisplay exchangeRateDisplay;
     private final Map<Currency, List<ExchangeRate>> exchangeRateCache = new HashMap<>();
 
     public MoneyControl(
             MoneyDisplay moneyDisplay,
             MoneyDialog moneyDialog,
             CurrencyDialog currencyDialog,
-            CurrencyAPI api
+            CurrencyAPI api,
+            ExchangeRateDisplay exchangeRateDisplay
     ) {
         this.moneyDisplay = moneyDisplay;
         this.moneyDialog = moneyDialog;
         this.currencyDialog = currencyDialog;
         this.api = api;
+        this.exchangeRateDisplay = exchangeRateDisplay;
 
         this.moneyDialog.on(this::updateDisplay);
         this.currencyDialog.on(this::updateDisplay);
@@ -38,10 +43,16 @@ public class MoneyControl {
         Money result = getExchangedMoneyFromCurrentValues();
         if (result == null) {
             moneyDisplay.show(moneyDialog.get());
+            exchangeRateDisplay.show(getEqualExchangeRateFor(moneyDialog.get()));
             return;
         }
 
+        exchangeRateDisplay.show(getCurrentExchangeRate());
         moneyDisplay.show(result);
+    }
+
+    private ExchangeRate getEqualExchangeRateFor(Money money) {
+        return new ExchangeRate(money.currency(), money.currency(), LocalDate.now(), 1.0);
     }
 
     private Money getExchangedMoneyFromCurrentValues() {
@@ -51,11 +62,19 @@ public class MoneyControl {
             return null;
         }
 
+        ExchangeRate exchangeRate = getCurrentExchangeRate(money, exchangeCurrency);
+        return calculateExchangeValue(money, exchangeRate, exchangeCurrency);
+    }
+
+    private ExchangeRate getCurrentExchangeRate() {
+        return getCurrentExchangeRate(moneyDialog.get(), currencyDialog.get());
+    }
+
+    private ExchangeRate getCurrentExchangeRate(Money money, Currency exchangeCurrency) {
         ExchangeRate exchangeRate = getExchangeRateFromCacheFor(money.currency(), exchangeCurrency);
         if (exchangeRate.equals(ExchangeRate.NULL))
             throwNoExchangeRateFoundException(money, exchangeCurrency);
-
-        return calculateExchangeValue(money, exchangeRate, exchangeCurrency);
+        return exchangeRate;
     }
 
     private static Money calculateExchangeValue(Money base, ExchangeRate exchangeRate, Currency exchangeCurrency) {
