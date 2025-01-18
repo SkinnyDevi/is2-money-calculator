@@ -12,7 +12,7 @@ import model.Currency;
 import java.util.List;
 
 public class Main {
-    private static final boolean USE_ONLINE_API = false;
+    private static final boolean USE_ONLINE_API = true;
 
     public static void main(String[] args) {
         CurrencyAPI api = getAppApi();

@@ -2,6 +2,7 @@ package apps.swing;
 
 import model.Currency;
 import model.Money;
+import view.AppColors;
 import view.CurrencyDialog;
 import view.MoneyDialog;
 
@@ -34,6 +35,7 @@ public class SwingMoneyDialog extends JPanel implements MoneyDialog {
 
     @Override
     public MoneyDialog setup(List<Currency> currencies) {
+        this.setBackground(getColor(AppColors.PANEL_BACKGROUND_COLOR));
         add(createAmountTextField());
         add(BorderLayout.CENTER, createCurrencyDialog(currencies));
         return this;
@@ -53,13 +55,21 @@ public class SwingMoneyDialog extends JPanel implements MoneyDialog {
         SwingCurrencyDialog dialog = new SwingCurrencyDialog();
         dialog.setup(currencies);
         dialog.on(this::notifyOfEvent);
+        dialog.setBackground(getColor(AppColors.PANEL_BACKGROUND_COLOR));
         this.currencyDialog = dialog;
         return dialog;
+    }
+
+    private Color getColor(AppColors color) {
+        return color.get();
     }
 
     private Component createAmountTextField() {
         JTextField textField = new JTextField("00.00");
         textField.setColumns(15);
+        textField.setHorizontalAlignment(JTextField.CENTER);
+        textField.setBackground(getColor(AppColors.PANEL_BACKGROUND_COLOR));
+        textField.setForeground(getColor(AppColors.LABEL_TEXT_COLOR));
         createDocumentListener(textField);
         this.amountTextField = textField;
         return textField;

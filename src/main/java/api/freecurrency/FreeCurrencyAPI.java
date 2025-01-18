@@ -23,6 +23,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 
+/**
+ * Uses the API endpoints from <a href="https://freecurrencyapi.com/">FreeCurrencyApi Website</a>.
+ * <br/>
+ * If you have problems with the current API key, create an account to use a new key.
+ */
 public class FreeCurrencyAPI implements CurrencyAPI {
     public static final String API_ENDPOINT = "https://api.freecurrencyapi.com/v1/";
     private static final String API_KEY = "fca_live_uRhO9OGqZBbn8PA41pRlHkVQeFqPFVDVfHTL0RHN";

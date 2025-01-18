@@ -3,6 +3,7 @@ package apps.swing;
 import control.Command;
 import control.CommandIdentifiers;
 import model.Currency;
+import view.AppColors;
 import view.CurrencyDialog;
 import view.MoneyDialog;
 import view.MoneyDisplay;
@@ -16,22 +17,40 @@ import java.util.Map;
 
 public class SwingMainFrame extends JFrame {
     public static final int HORIZONTAL_MARGIN = 10;
+    public static final Font TEXT_FONT = new Font("Arial", Font.BOLD, 14);
+    public static final Font TITLE_FONT = new Font("Arial", Font.BOLD, 36);
+    public static final Dimension WINDOW_DIMENSIONS = new Dimension(700, 200);
     private final Map<String, Command> commands = new HashMap<>();
     private MoneyDialog moneyDialog;
     private MoneyDisplay moneyDisplay;
     private CurrencyDialog currencyDialog;
 
     public SwingMainFrame(List<Currency> currencies) throws HeadlessException {
-        this.setTitle("Money Calculator");
-        this.setSize(600, 300);
+        this.setTitle("Currency Converter");
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
         this.setLocationRelativeTo(null);
-        this.setMinimumSize(new Dimension(600, 300));
-        add(createMainContainer(currencies));
+        this.setBackground(getColor(AppColors.PANEL_BACKGROUND_COLOR));
+        lockWindowSize();
+
+        this.setLayout(new BorderLayout());
+        this.add(createContentContainer(currencies), BorderLayout.CENTER);
+    }
+
+    private void lockWindowSize() {
+        this.setResizable(false);
+        this.setSize(WINDOW_DIMENSIONS);
+    }
+
+    private Component createContentContainer(List<Currency> currencies) {
+        JPanel jPanel = createPanelWithBackgroundAppColor();
+        jPanel.add(createTitleContainer());
+        jPanel.add(createMainContainer(currencies));
+        return jPanel;
     }
 
     private Component createMainContainer(List<Currency> currencies) {
-        JPanel mainContainer = new JPanel(new GridBagLayout());
+        JPanel mainContainer = createPanelWithBackgroundAppColor();
+        mainContainer.setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(10, 10, 10, 10);
 
@@ -48,8 +67,23 @@ public class SwingMainFrame extends JFrame {
         return mainContainer;
     }
 
+    private Component createTitleContainer() {
+        JPanel jPanel = createPanelWithBackgroundAppColor();
+        jPanel.add(createTitleText());
+        return jPanel;
+    }
+
+    private Component createTitleText() {
+        JLabel label = new JLabel("Money Calculator");
+        label.setFont(TITLE_FONT);
+        label.setForeground(getColor(AppColors.LABEL_TEXT_COLOR));
+        label.setBackground(getColor(AppColors.BACKGROUND_BUTTON_HOVER_COLOR));
+        return label;
+    }
+
     private Component createMoneyDisplayContainer(List<Currency> currencies) {
-        JPanel jPanel = new JPanel(createGridLayout());
+        JPanel jPanel = createPanelWithBackgroundAppColor();
+        jPanel.setLayout(createGridLayoutWithVerticalSpacing());
         jPanel.setBorder(createMarginSpacingBorder());
         jPanel.add(createMoneyDisplay());
         jPanel.add(BorderLayout.CENTER, createCurrencyDialog(currencies));
@@ -59,6 +93,7 @@ public class SwingMainFrame extends JFrame {
     private Component createCurrencyDialog(List<Currency> currencies) {
         SwingCurrencyDialog swingCurrencyDialog = new SwingCurrencyDialog();
         swingCurrencyDialog.setup(currencies);
+        swingCurrencyDialog.setBackground(getColor(AppColors.PANEL_BACKGROUND_COLOR));
         this.currencyDialog = swingCurrencyDialog;
         return swingCurrencyDialog;
     }
@@ -70,10 +105,22 @@ public class SwingMainFrame extends JFrame {
     }
 
     private Component createHelperButtons() {
-        JPanel jPanel = new JPanel();
+        JPanel jPanel = createPanelWithBackgroundAppColor();
         jPanel.setBorder(createMarginSpacingBorder());
         jPanel.add(createSwapButton());
         return jPanel;
+    }
+
+    private JPanel createPanelWithBackgroundAppColor() {
+        JPanel jPanel = new JPanel();
+        jPanel.setBackground(getColor(AppColors.PANEL_BACKGROUND_COLOR));
+        return jPanel;
+    }
+
+    private Component createSwapButton() {
+        JButton jButton = new JButton("Swap");
+        configureButton(jButton, CommandIdentifiers.SWAP_DIALOG_CONTENTS);
+        return jButton;
     }
 
     private void configureButton(JButton jButton, CommandIdentifiers identifier) {
@@ -86,25 +133,33 @@ public class SwingMainFrame extends JFrame {
     }
 
     private void styleButton(JButton jButton) {
-
+        jButton.setOpaque(true);
+        jButton.setPreferredSize(new Dimension(140, 30));
+        jButton.setFont(TEXT_FONT);
+        jButton.setForeground(Color.WHITE);
+        jButton.setBackground(getColor(AppColors.BUTTON_BG_COLOR));
+        jButton.setFocusPainted(false);
+        jButton.setBorder(createRoundedBorder());
     }
 
-    private Component createSwapButton() {
-        JButton jButton = new JButton("Swap");
-        configureButton(jButton, CommandIdentifiers.SWAP_DIALOG_CONTENTS);
-        return jButton;
+    private Border createRoundedBorder() {
+        return SwingRoundedBorder.with(20);
+    }
+
+    private Color getColor(AppColors color) {
+        return color.get();
     }
 
     private Component createMoneyDialog(List<Currency> currencies) {
         SwingMoneyDialog swingMoneyDialog = new SwingMoneyDialog();
         swingMoneyDialog.setup(currencies);
         swingMoneyDialog.setBorder(createMarginSpacingBorder());
-        swingMoneyDialog.setLayout(createGridLayout());
+        swingMoneyDialog.setLayout(createGridLayoutWithVerticalSpacing());
         this.moneyDialog = swingMoneyDialog;
         return swingMoneyDialog;
     }
 
-    private LayoutManager createGridLayout() {
+    private LayoutManager createGridLayoutWithVerticalSpacing() {
         return new GridLayout(2, 1, 0, 10);
     }
 

@@ -1,15 +1,28 @@
 package apps.swing;
 
 import model.Money;
+import view.AppColors;
 import view.MoneyDisplay;
 
 import javax.swing.*;
+import javax.swing.border.Border;
+import java.awt.*;
 import java.text.DecimalFormat;
 
 public class SwingMoneyDisplay extends JLabel implements MoneyDisplay {
     public SwingMoneyDisplay() {
         this.setText("00.00");
         this.setHorizontalAlignment(JLabel.CENTER);
+        this.setForeground(getColor(AppColors.LABEL_TEXT_COLOR));
+        setBorder(createLineBorder());
+    }
+
+    private Border createLineBorder() {
+        return BorderFactory.createLineBorder(getColor(AppColors.LABEL_TEXT_COLOR));
+    }
+
+    private Color getColor(AppColors color) {
+        return color.get();
     }
 
     @Override

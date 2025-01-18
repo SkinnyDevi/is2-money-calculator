@@ -1,9 +1,11 @@
 package apps.swing;
 
 import model.Currency;
+import view.AppColors;
 import view.CurrencyDialog;
 
 import javax.swing.*;
+import javax.swing.border.Border;
 import java.awt.*;
 import java.awt.event.ActionListener;
 import java.util.List;
@@ -22,7 +24,16 @@ public class SwingCurrencyDialog extends JPanel implements CurrencyDialog {
     public CurrencyDialog setup(List<Currency> currencies) {
         setLayout(new BorderLayout());
         add(createDropdownComponent(currencies));
+        setBorder(createLineBorder());
         return this;
+    }
+
+    private Border createLineBorder() {
+        return BorderFactory.createLineBorder(getColor(AppColors.LABEL_TEXT_COLOR));
+    }
+
+    private Color getColor(AppColors color) {
+        return color.get();
     }
 
     @Override
@@ -38,6 +49,8 @@ public class SwingCurrencyDialog extends JPanel implements CurrencyDialog {
     private Component createDropdownComponent(List<Currency> currencies) {
         JComboBox<Currency> dropdown = new JComboBox<>();
         currencies.forEach(dropdown::addItem);
+        dropdown.setBackground(getColor(AppColors.PANEL_BACKGROUND_COLOR));
+        dropdown.setForeground(getColor(AppColors.LABEL_TEXT_COLOR));
         dropdown.addActionListener(createActionListener(dropdown));
         this.currencyDropdown = dropdown;
         return dropdown;
