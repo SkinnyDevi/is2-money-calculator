@@ -39,6 +39,7 @@ public class SwingCurrencyDialog extends JPanel implements CurrencyDialog {
     @Override
     public void swapTo(Currency currency) {
         currencyDropdown.setSelectedItem(currency);
+        previousSelection = currency;
     }
 
     @Override

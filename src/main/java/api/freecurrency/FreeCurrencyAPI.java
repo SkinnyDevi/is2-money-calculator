@@ -74,7 +74,7 @@ public class FreeCurrencyAPI implements CurrencyAPI {
     @Override
     public List<ExchangeRate> getExchangeRatesFor(String baseCode) {
         Currency base = getCurrencyFor(baseCode);
-        return formatExchangeRatesFor(fetchContentsOf(getExchangeRatesEndpoint()), base);
+        return formatExchangeRatesFor(fetchContentsOf(getExchangeRatesEndpointWithBaseFor(baseCode)), base);
     }
 
     @Override
@@ -116,6 +116,15 @@ public class FreeCurrencyAPI implements CurrencyAPI {
     private URL getExchangeRatesEndpoint() {
         try {
             return new URL(insertApiKey(createEndpoint(EXCHANGE_RATE_ENDPOINT)));
+        } catch (MalformedURLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private URL getExchangeRatesEndpointWithBaseFor(String baseCode) {
+        String baseURL = insertApiKey(createEndpoint(EXCHANGE_RATE_ENDPOINT));
+        try {
+            return new URL(baseURL + "&base_currency=" + baseCode);
         } catch (MalformedURLException e) {
             throw new RuntimeException(e);
         }

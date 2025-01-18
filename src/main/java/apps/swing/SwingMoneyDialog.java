@@ -66,13 +66,18 @@ public class SwingMoneyDialog extends JPanel implements MoneyDialog {
 
     private Component createAmountTextField() {
         JTextField textField = new JTextField("00.00");
+        setupTextField(textField);
+        this.amountTextField = textField;
+        return textField;
+    }
+
+    private void setupTextField(JTextField textField) {
         textField.setColumns(15);
+        textField.setCaretColor(getColor(AppColors.LABEL_TEXT_COLOR));
         textField.setHorizontalAlignment(JTextField.CENTER);
         textField.setBackground(getColor(AppColors.PANEL_BACKGROUND_COLOR));
         textField.setForeground(getColor(AppColors.LABEL_TEXT_COLOR));
         createDocumentListener(textField);
-        this.amountTextField = textField;
-        return textField;
     }
 
     private void createDocumentListener(JTextField textField) {
