@@ -5,7 +5,7 @@ import software.ulpgc.moneycalculator.api.freecurrency.FreeCurrencyAPI;
 import software.ulpgc.moneycalculator.api.mock.MockAPI;
 import software.ulpgc.moneycalculator.control.Command;
 import software.ulpgc.moneycalculator.control.CommandIdentifiers;
-import software.ulpgc.moneycalculator.control.MoneyControl;
+import software.ulpgc.moneycalculator.control.MoneyPresenter;
 import software.ulpgc.moneycalculator.control.SwapDialogContentsCommand;
 import software.ulpgc.moneycalculator.model.Currency;
 
@@ -18,8 +18,8 @@ public class Main {
         CurrencyAPI api = getAppApi();
         List<Currency> currencies = api.getCurrencies();
         SwingMainFrame mainFrame = new SwingMainFrame(currencies);
-        MoneyControl moneyControl = createAppController(mainFrame, api);
-        attachCommandsTo(mainFrame, moneyControl);
+        MoneyPresenter moneyPresenter = createAppPresenter(mainFrame, api);
+        attachCommandsTo(mainFrame, moneyPresenter);
         mainFrame.setVisible(true);
     }
 
@@ -27,8 +27,8 @@ public class Main {
         return USE_ONLINE_API ? new FreeCurrencyAPI() : new MockAPI();
     }
 
-    private static MoneyControl createAppController(SwingMainFrame mainFrame, CurrencyAPI api) {
-        return new MoneyControl(
+    private static MoneyPresenter createAppPresenter(SwingMainFrame mainFrame, CurrencyAPI api) {
+        return new MoneyPresenter(
                 mainFrame.getMoneyDisplay(),
                 mainFrame.getMoneyDialog(),
                 mainFrame.getCurrencyDialog(),
@@ -37,11 +37,11 @@ public class Main {
         );
     }
 
-    private static void attachCommandsTo(SwingMainFrame mainFrame, MoneyControl moneyControl) {
-        mainFrame.put(CommandIdentifiers.SWAP_DIALOG_CONTENTS, createExchangeCommand(moneyControl));
+    private static void attachCommandsTo(SwingMainFrame mainFrame, MoneyPresenter moneyPresenter) {
+        mainFrame.put(CommandIdentifiers.SWAP_DIALOG_CONTENTS, createExchangeCommand(moneyPresenter));
     }
 
-    private static Command createExchangeCommand(MoneyControl moneyControl) {
-        return new SwapDialogContentsCommand(moneyControl);
+    private static Command createExchangeCommand(MoneyPresenter moneyPresenter) {
+        return new SwapDialogContentsCommand(moneyPresenter);
     }
 }

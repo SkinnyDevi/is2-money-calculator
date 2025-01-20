@@ -14,7 +14,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class MoneyControl {
+public class MoneyPresenter {
 	private final MoneyDisplay moneyDisplay;
 	private final MoneyDialog moneyDialog;
 	private final CurrencyDialog currencyDialog;
@@ -22,7 +22,7 @@ public class MoneyControl {
 	private final ExchangeRateDisplay exchangeRateDisplay;
 	private final Map<Currency, List<ExchangeRate>> exchangeRateCache = new HashMap<>();
 
-	public MoneyControl(
+	public MoneyPresenter(
 			MoneyDisplay moneyDisplay,
 			MoneyDialog moneyDialog,
 			CurrencyDialog currencyDialog,

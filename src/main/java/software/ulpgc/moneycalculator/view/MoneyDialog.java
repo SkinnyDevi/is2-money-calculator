@@ -7,11 +7,8 @@ import java.util.List;
 
 public interface MoneyDialog {
 	Money get();
-
 	MoneyDialog setup(List<Currency> currencies);
-
 	void swapTo(Currency currency);
-
 	void on(AmountUpdateEvent event);
 
 	interface AmountUpdateEvent {

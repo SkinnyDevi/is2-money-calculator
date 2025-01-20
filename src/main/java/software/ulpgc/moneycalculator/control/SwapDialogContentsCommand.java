@@ -1,14 +1,14 @@
 package software.ulpgc.moneycalculator.control;
 
 public class SwapDialogContentsCommand implements Command {
-    private final MoneyControl control;
+    private final MoneyPresenter presenter;
 
-    public SwapDialogContentsCommand(MoneyControl control) {
-        this.control = control;
+    public SwapDialogContentsCommand(MoneyPresenter presenter) {
+        this.presenter = presenter;
     }
 
     @Override
     public void execute() {
-        control.swapDialogContents();
+        presenter.swapDialogContents();
     }
 }
